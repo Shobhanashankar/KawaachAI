@@ -1,12 +1,16 @@
-## KawaachAI — Parametric Income Insurance for Q-Commerce Delivery Workers
+# KawaachAI — Parametric Income Insurance for Q-Commerce Delivery Workers
+
+> **Guidewire DEVTrails 2026** · Persona: Q-Commerce (Zepto & Blinkit) · Phase 1 — March 20, 2026
+
+---
 
 ## The Problem
 
-Ravi delivers groceries for Zepto in Bengaluru. Last monsoon, 4 days of heavy rain halted all deliveries in his zone. He lost ₹5,400 in wages — no refund, no compensation, no safety net. He had no insurance. Neither did any of his 847,000 fellow Q-commerce delivery workers across India.
+Ravi delivers groceries for Zepto in Bengaluru. Last monsoon, 4 days of heavy rain halted all deliveries in his zone. He lost ₹5,400 in wages — no refund, no compensation, no safety net. He had no insurance. Neither did any of his fellow Q-commerce delivery workers.
 
-Platform-based delivery workers lose **20–30% of monthly earnings** to uncontrollable external disruptions — extreme rain, toxic AQI, cyclones, civic curfews, and platform outages. No product exists to protect their income against these events. Until now.
+Platform-based gig workers lose an estimated **20–30% of monthly earnings** to uncontrollable external disruptions — extreme rain, toxic AQI, cyclones, and civic curfews. India's gig workforce stands at 7.7 million today and is projected to reach 23.5 million by 2030 (NITI Aayog, 2022). The majority carry no income protection against these events.
 
-**KawaachAI** is a cloud-native, zero-touch parametric income insurance platform. When an external disruption crosses a verified threshold, the platform auto-detects the event, raises a claim inside Guidewire ClaimCenter, and credits lost wages to the worker's UPI ID — **in under 500 milliseconds, with zero worker action required.**
+**KawaachAI** is a parametric income insurance platform for Zepto and Blinkit delivery workers. The design principle is simple: don't build a claim-after-loss tool — build a protect-before-loss platform. When an external disruption crosses a verified threshold, the system auto-detects the event, raises a claim in Guidewire ClaimCenter, and credits lost wages to the worker's UPI ID with zero manual action required.
 
 ---
 
@@ -15,34 +19,43 @@ Platform-based delivery workers lose **20–30% of monthly earnings** to uncontr
 | ✅ Covered | ❌ Explicitly Excluded |
 |---|---|
 | Lost income during verified external disruptions | Health / medical expenses |
-| Weekly premium ₹49–₹99 aligned to payout cycle | Vehicle repair or maintenance |
+| Weekly premiums ₹49–₹99 aligned to payout cycle | Vehicle repair or maintenance |
 | Parametric payouts — no paperwork, no adjuster | Accident compensation |
 | Q-Commerce workers only (Zepto / Blinkit) | Life insurance |
 
-> **Golden Rule:** We insure the *income lost*, not the disruption itself. Every payout is a % of the worker's daily wage — nothing more.
+> **Golden Rule:** We insure the *income lost*, not the disruption itself. Every payout is a percentage of the worker's daily wage — nothing more.
 
 ---
 
 ## Persona — Who We're Building For
 
-**Zepto and Blinkit delivery workers** are the highest-disruption segment in Indian gig work:
+**Zepto and Blinkit delivery workers** face a unique income risk profile that no existing insurance product addresses:
 
-- Operate on **10-minute delivery SLAs** — a 2-hour rain halt costs 12+ deliveries and ₹300–600
+- Operate on **10-minute delivery SLAs** — a 2-hour rain halt means 12+ missed deliveries and ₹300–600 in lost earnings
 - **Dark-store tethered** — assigned to a single fulfilment zone, cannot shift to a safer area when disruption hits
-- Earn **₹350–600/day**, 6 days/week — no paid leave, no sick pay, no income buffer
-- **Smartphone-native** — UPI, WhatsApp, and app-based workflows are their default operating environment
-- **Language-diverse** — majority comfortable in Hindi, Kannada, Tamil, or Telugu; not English
+- Earn approximately **₹350–600/day**, 6 days/week — no paid leave, no sick pay, no income buffer (Fairwork India Report, 2023–24)
+- **Smartphone-native** — UPI, WhatsApp, and app-based workflows are their primary tools
+- **Language-diverse** — most workers are more comfortable in Hindi, Kannada, Tamil, or Telugu than English
+
+### Worker Profiles
+
+| Worker | Earnings at Risk | Why KawaachAI Fits |
+|---|---|---|
+| Raju, Bengaluru | ₹450/day. Loses ₹350+ on heavy rain days — dark store zone prone to waterlogging. | ₹49/week premium. Up to ₹1,350 payout for 3 disrupted days. Net protection: 27× premium. |
+| Priya, Mumbai | ₹520/day. Zone near Kurla — chronic monsoon waterlogging. Trigger fires 6–8× per monsoon. | High-risk zone premium ₹79/week. Annual payout potential covers what she'd otherwise lose in 3 weeks. |
+| Kiran, Delhi | ₹480/day. AQI exceeds 300 regularly in winter months. | AQI trigger covers Nov–Feb exposure. Low flood risk → floor premium ₹49/week. |
 
 ### Persona Scenarios
 
-**Scenario 1 — Ravi, Bengaluru (Rain trigger)**
-> IMD reports 88mm rainfall in 24 hours in zone BLR-H3-07 (Koramangala). Threshold: >75mm. KawaachAI trigger fires at 6:14 AM. Ravi's GPS confirms he is in the zone. Fraud checks pass in 48ms. ClaimCenter FNOL submitted via Cloud API. ₹450 UPI credit hits Ravi's phone at 6:14:00.487 AM. Total time: 487ms.
+**Scenario 1 — Raju, Bengaluru (Rain trigger)**
+> OpenWeather reports 88mm rainfall in 24 hours in Raju's H3 zone. Threshold: >75mm. KawaachAI trigger monitor detects the breach. All active policyholders in the zone are identified. Fraud checks run in parallel. ClaimCenter FNOL submitted via Guidewire Cloud API. ₹225 (50% of ₹450 daily wage) credited to Raju's UPI. Zero action required from Raju.
 
-**Scenario 2 — Priya, Delhi (AQI trigger)**
-> CPCB sensor reports AQI 342 in zone DEL-H3-12 (Connaught Place) for 3+ hours. Threshold: >300 sustained. KawaachAI auto-claims for all 312 active policyholders in the zone. Payout: 100% daily wage (₹480) each. Zero workers filed a claim manually.
+**Scenario 2 — Priya, Mumbai (AQI trigger)**
+> CPCB data shows AQI 342 in Priya's zone sustained for 3+ hours. Threshold: >300. All active policyholders in the zone are auto-claimed. Payout: 100% daily wage. No worker filed anything manually.
 
-**Scenario 3 — Kiran, Mumbai (Curfew trigger)**
-> Municipal corporation issues emergency curfew in zone MUM-H3-09 (Dharavi) at 2 PM. Civic webhook fires within 8 minutes. All 91 active policyholders in zone auto-notified and auto-claimed. Payout: 75% daily wage for remaining working hours.
+**Scenario 3 — Kiran, Delhi (Platform downtime trigger)**
+> Blinkit app goes down for 2.5 hours. Platform downtime webhook fires. Kiran and all active policyholders in the zone receive 40% daily wage automatically.
+> *(Civic curfew and platform downtime triggers use simulated webhooks in the demo — no public government or platform API exists for real-time detection. These represent the production integration target.)*
 
 ---
 
@@ -52,191 +65,205 @@ Platform-based delivery workers lose **20–30% of monthly earnings** to uncontr
 External Disruption (Rain / AQI / Wind / Curfew / Platform Downtime)
         │
         ▼
-Trigger Monitor (Apache Flink + IMD/CPCB/OpenWeather APIs)
-        │  Threshold breached in H3 zone
+Trigger Monitor — polls OpenWeather / CPCB / OpenWeather wind every 5 min per H3 zone
+        │  Threshold breached
         ▼
-Kafka Event → disruption-events topic
+Kafka event published → disruption-events topic
         │
         ▼
-Claims Service ──► Fraud Engine (6-layer, <50ms)
+Claims Service ──► Fraud Engine (6 checks in parallel, target <50ms)
         │                    │
-        │              [GPS zone check]
-        │              [Dedup Redis lock]
-        │              [API cross-validation]
-        │              [Isolation Forest score]
-        │              [Device fingerprint]
-        │              [SafeRider trust score]
+        │              [1. GPS zone check — PostGIS ST_DWithin]
+        │              [2. Dedup lock — Redis SETNX]
+        │              [3. Multi-source cross-validation]
+        │              [4. Isolation Forest anomaly score]
+        │              [5. Device fingerprint check]
+        │              [6. SafeRider trust score]
         │
-        ▼  (all 6 layers pass)
-Guidewire ClaimCenter — FNOL via Cloud API
-        │  Claim status: Draft → Approved (<3s)
+        ▼  (all checks pass)
+Guidewire ClaimCenter — automated FNOL via Cloud API
+        │  Claim: Draft → Approved
         ▼
-Payout Service → Razorpay UPI Payout API
+Payout Service → Razorpay Payout API (sandbox / test mode)
         │
         ▼
 Worker receives ₹ credit + FCM push notification
-        
-Total pipeline: < 500ms
+
+Target automated claim path: < 500ms (local demo environment)
 ```
+
+---
+
+## Onboarding Flow
+
+A new worker can be fully onboarded and covered in under 3 minutes:
+
+1. **Download app** — React Native, available in Hindi / Kannada / Tamil / Telugu, auto-detected from phone locale
+2. **Identity verification** — Aadhaar number + OTP flow (simulated in demo; production uses DigiLocker Requester API, which requires government partnership approval)
+3. **Link gig account** — Worker enters their Zepto or Blinkit Partner ID (self-declared; platform API validation simulated in demo)
+4. **Zone assignment** — GPS location mapped to the nearest Uber H3 hexagon (Resolution 9, ~500m). AI risk profiler scores the zone.
+5. **Premium shown** — Weekly premium displayed with SHAP feature breakdown. Worker signs UPI AutoPay mandate (deducted every Monday, aligned to Zepto/Blinkit payout day)
+6. **Policy active** — Coverage begins immediately. First Disruption Forecast notification pushed via FCM.
 
 ---
 
 ## Weekly Premium Model
 
-Gig workers earn and are paid weekly. Aligning premiums to their Monday Zepto/Blinkit payout eliminates the affordability barrier — the worker never pre-pays from savings.
+Gig workers earn and are paid weekly. Aligning premiums to their Monday Zepto/Blinkit payout eliminates the affordability barrier — the worker never pre-pays from savings. The ₹49–₹99/week range is calibrated to stay under 2% of weekly earnings for any eligible worker.
 
 ### Premium Formula
 
-```
-weekly_premium = max(₹49, base_premium × zone_risk_multiplier − discounts)
+| Variable | Description | Range |
+|---|---|---|
+| Base premium | 4% of estimated daily wage × 7 days | ₹42–₹70 |
+| Zone risk multiplier | XGBoost-scored H3 zone index (flood/AQI/wind history) | ×0.8 – ×1.4 |
+| SafeRider discount | −6% per loyalty tier, max −24% at Tier 5 | −₹3 – −₹16 |
+| Dost Shield discount | −10% for squad pool of 5–10 workers | −₹5 – −₹9 |
+| **Final weekly premium** | max(₹49, base × zone_mult − discounts) | **₹49 – ₹99** |
 
-where:
-  base_premium         = 0.04 × daily_wage_estimate × 7
-  zone_risk_multiplier = XGBoost zone score (range: 0.8 – 1.4)
-                         based on 18-month historical disruption data per H3 hex
-  discounts            = SafeRider loyalty discount (up to −24%)
-                       + Dost Shield group discount (−10% if in squad pool)
-
-premium cap: ₹99/week
-premium floor: ₹49/week
-```
+*Zone multipliers are trained on publicly available historical weather data. Premium figures are illustrative and subject to actuarial review.*
 
 ### Example Calculation
 
-| Worker | Zone | Daily Wage | Base | Zone Multiplier | Discount | Final |
+| Worker | Zone Risk | Daily Wage | Base | Multiplier | Discount | Final |
 |---|---|---|---|---|---|---|
-| Ravi, BLR | High flood risk | ₹450 | ₹63 | ×1.3 | −₹2 (new user) | **₹79/week** |
-| Priya, DEL | Medium AQI risk | ₹480 | ₹67 | ×1.1 | −₹8 (SafeRider Tier 3) | **₹66/week** |
-| Kiran, MUM | Low risk zone | ₹420 | ₹59 | ×0.9 | −₹6 | **₹49/week** (floor) |
-
-### Why Weekly?
-Zepto and Blinkit pay partners every Monday. Premiums are deducted the same day via UPI AutoPay mandate — zero friction, zero advance payment from savings.
+| Raju, BLR | High flood | ₹450 | ₹63 | ×1.3 | −₹2 (new user) | **₹79/week** |
+| Priya, MUM | High flood | ₹520 | ₹73 | ×1.3 | −₹8 (Tier 3) | **₹87/week** |
+| Kiran, DEL | Medium AQI | ₹480 | ₹67 | ×1.0 | −₹18 (Tier 4) | **₹49/week** (floor) |
 
 ---
 
 ## 5 Parametric Triggers
 
-All triggers fire **automatically** — no worker action required. Each threshold is calibrated to represent a genuine income-loss event for Q-commerce delivery.
+All triggers fire automatically — no worker action required.
 
-| # | Trigger | Data Source | Threshold | Hours Lost | Payout |
-|---|---|---|---|---|---|
-| 1 | Heavy rain (moderate) | IMD Open API | >75mm / 24hr in H3 zone | 4–6 hours | 50% daily wage |
-| 2 | Heavy rain (severe) | IMD Open API | >100mm / 24hr in H3 zone | Full day | 100% daily wage |
-| 3 | Hazardous AQI | CPCB Real-time API | AQI >300 sustained >3 hrs | Full day | 100% daily wage |
-| 4 | Cyclone / high wind | OpenWeather API | Wind >60 kmph sustained | Full day | 100% daily wage |
-| 5 | Civic curfew / zone closure | Mock Govt webhook | Official curfew flag in zone | Remaining hours | 75% daily wage |
-| 6 | Platform downtime | Mocked webhook | Zepto/Blinkit down >2 hrs | 2–4 hours | 40% daily wage |
+| # | Trigger | Data Source | Threshold | Payout |
+|---|---|---|---|---|
+| 1 | Heavy rain (moderate) | OpenWeather API (free tier) | >75mm / 24hr in H3 zone | 50% daily wage |
+| 2 | Heavy rain (severe) | OpenWeather API (free tier) | >100mm / 24hr in H3 zone | 100% daily wage |
+| 3 | Hazardous AQI | OpenWeather AQI / CPCB data | AQI >300 sustained >3 hrs | 100% daily wage |
+| 4 | Cyclone / high wind | OpenWeather API (free tier) | Wind >60 kmph sustained | 100% daily wage |
+| 5 | Civic curfew | Mock webhook (simulated) | Official curfew flag in zone | 75% daily wage |
+| 6 | Platform downtime | Mock webhook (simulated) | App down >2 hrs | 40% daily wage |
 
-**Max claim per week:** 3 disrupted days (3 × daily wage)  
-**Cross-validation rule:** Disruption must be confirmed by ≥2 of 3 independent data sources before trigger fires
+**Max per week:** 3 disrupted days (3 × daily wage)
+
+Triggers 1–4 use real free-tier APIs. Triggers 5–6 are simulated in the demo — they represent the production integration target once official data partnerships are in place.
+
+**Cross-validation:** Triggers 1–4 require confirmation from ≥2 independent sources before a payout fires, reducing false positives from a single errant data feed.
 
 ---
 
 ## AI & ML Integration
 
 ### 1. XGBoost Dynamic Premium Engine
-- **Input:** 14-feature vector per worker (zone flood history, AQI index, wind exposure, claim history, SafeRider score, active hours, dark store cluster density, monsoon season flag, and 6 more)
-- **Output:** Weekly premium amount + SHAP feature importance breakdown
-- **Why SHAP?** Every premium is explainable. Worker sees: *"Your premium is ₹79 this week — ₹12 higher than base because your zone had 3 flood events in the last 90 days."* No black-box pricing.
+- **Input:** Feature vector per worker — H3 zone flood frequency, AQI index, wind exposure, claim history, SafeRider score, active delivery hours, monsoon season flag
+- **Output:** Weekly premium + SHAP feature importance breakdown shown in-app
+- **Why SHAP?** Every premium change is explained in plain language to the worker — no black-box pricing
+- **Implementation:** Pre-trained on synthetic data; served via FastAPI pod inside Kubernetes
 
 ### 2. Isolation Forest Fraud Detection
-- **Input:** 30-day rolling feature vector per worker (claim frequency, GPS zone match rate, timing patterns, device consistency)
-- **Output:** Anomaly score 0–1. Score >0.72 = flagged for review
-- **Inference latency:** <35ms
-- **Training:** Scikit-learn on synthetic + historical claim data. Retrained weekly.
+- **Input:** Rolling feature vector per worker — claim frequency, GPS zone match rate, claim timing patterns, device consistency
+- **Output:** Anomaly score. High-scoring claims are flagged for review, not auto-denied
+- **Target inference latency:** <35ms
+- **Implementation:** scikit-learn, served via FastAPI pod; feature vectors updated periodically via scheduled job (Apache Flink in production)
 
-### 3. LSTM Disruption Forecast
-- **Input:** 18-month weather + AQI time-series per H3 hexagon
-- **Output:** 72-hour disruption probability per zone, updated every 6 hours
-- **Usage:** Powers the daily *Disruption Forecast* push notification at 6 AM
-- *"73% rain probability in your zone today. Consider upgrading coverage for ₹12 extra this week."*
+### 3. LSTM Disruption Forecast *(Phase 3)*
+- **Input:** Historical weather and AQI data per H3 zone (from OpenWeather historical API and CPCB records)
+- **Output:** 72-hour disruption probability per zone
+- **Usage:** Powers the daily 6 AM push notification — *"High rain probability in your zone today. Consider upgrading coverage for ₹12 extra this week."*
+- Phase 2 uses a rule-based probability estimate as a placeholder; full LSTM is a Phase 3 deliverable
 
-### 4. MLOps Pipeline
-- MLflow for experiment tracking and model registry
-- Kubeflow Pipelines for automated retraining (triggered on model drift >2%)
-- Canary deployments for new model versions — no big-bang releases
+### 4. LLM — Vernacular Onboarding and Borderline Claim Reasoning
+- **Onboarding:** Claude or Gemini API handles natural-language queries during onboarding in the worker's chosen language. A worker can type *"bhai aaj policy kab milegi"* and receive a clear answer.
+- **Borderline claims:** For claims that score near the fraud threshold, the LLM analyses the claim narrative and context to assist in review — reducing incorrect rejections
+
+### 5. MLOps
+- MLflow for experiment tracking and model registry (open source, runs locally)
+- Model retraining is manual in Phase 2; automated drift-based retraining is a Phase 3 target
 
 ---
 
 ## Tech Stack
 
 ### Platform Choice: Mobile (React Native)
-Workers are smartphone-native. UPI, FCM push notifications, GPS location, and Aadhaar eKYC are all mobile-native capabilities. A web app would add friction for workers who don't use laptops. React Native gives us a single codebase for iOS + Android.
 
-### Full Stack
+Workers are smartphone-native. UPI mandates, FCM push notifications, GPS, and eKYC flows are all mobile-native. A web app adds unnecessary friction. React Native provides a single codebase for iOS and Android.
 
-| Layer | Technology | Reason |
+### Build Stack
+
+All backend services are containerised and deployed on Kubernetes. We use **minikube** locally — free, runs on a laptop, no cloud account required. The architecture is GKE-compatible for production. HPA scales the Claims service automatically under load; KEDA scales pods based on Kafka consumer lag, not CPU, so bursts during a mass disruption event are handled without manual intervention.
+
+| Layer | Technology | Notes |
 |---|---|---|
-| Mobile app | React Native (Expo) | iOS + Android. Native UPI/FCM/GPS. Offline-first. |
-| Admin dashboard | React + Vite + Mapbox GL | Risk heatmap rendering, ClickHouse data via REST |
-| API gateway | Kong on Kubernetes | Rate limiting, JWT auth, plugin ecosystem |
-| Microservices | Node.js (TypeScript) + gRPC | 5 independent services: Worker, Premium, Trigger, Claims, Payout |
-| ML inference | Python (FastAPI) + KServe | XGBoost, Isolation Forest, LSTM as K8s-native model endpoints |
-| Event streaming | Apache Kafka (Strimzi) | Immutable event log: disruption-events, claims-pipeline, payout-events topics |
-| Stream processing | Apache Flink | Real-time feature engineering, 5-min zone polling, rolling fraud vectors |
-| Transactional DB | PostgreSQL 16 + PostGIS | Workers, policies, claims. ST_DWithin for GPS fraud checks |
-| Time-series DB | TimescaleDB | Weather/AQI hypertables partitioned by zone + hour |
-| Cache | Redis Cluster | Sessions, ML feature cache, SETNX deduplication locks |
-| Data lake | Apache Iceberg on S3 | Raw event archive, ML training datasets |
-| Analytics | ClickHouse | Sub-second loss ratio aggregations for insurer dashboard |
-| MLOps | MLflow + Kubeflow | Experiment tracking, model registry, automated retraining |
-| Infrastructure | Kubernetes (GKE) + KEDA | HPA pod scaling, Kafka-lag-driven autoscaling via KEDA |
-| Observability | Prometheus + Grafana + Jaeger | Metrics, dashboards, distributed tracing |
-| Secrets | HashiCorp Vault | API keys injected via Vault Agent sidecar — never hardcoded |
-| Payments (mock) | Razorpay Payout API (sandbox) | UPI payouts in test mode |
-| Notifications | FCM + WhatsApp Business API | Push + messaging in worker's language |
-| CI/CD | GitHub Actions + ArgoCD | GitOps: merge to main → build → test → K8s deploy |
+| Mobile app | React Native (Expo) | iOS + Android, single codebase |
+| Admin dashboard | React + Vite + Leaflet | H3 risk heatmap via Leaflet (free, open source) |
+| Backend services | Node.js (TypeScript) | 5 services: Worker, Premium, Trigger, Claims, Payout |
+| ML inference | Python + FastAPI | Serves XGBoost and Isolation Forest models |
+| Trigger polling | Node.js cron job | Polls OpenWeather/CPCB every 5 min per H3 zone |
+| Event streaming | Apache Kafka | disruption-events, claims-pipeline, payout-events topics |
+| Container orchestration | Kubernetes — minikube | All services as pods with Helm charts |
+| Config and secrets | Kubernetes ConfigMaps + Secrets | API keys never hardcoded |
+| Pod autoscaling | HPA on Claims service | Scales under concurrent claim load |
+| Event-driven autoscaling | KEDA — Kafka consumer lag → pod count | Scales with queue depth, not CPU |
+| Observability | Prometheus + Grafana (kube-prometheus-stack Helm) | Pod count, claim throughput, Kafka lag |
+| CI/CD | GitHub Actions → kubectl apply | Push to main triggers redeploy |
+| Transactional DB | PostgreSQL + PostGIS | Workers, policies, claims — geospatial fraud checks |
+| Cache / dedup | Redis | SETNX deduplication locks per worker per event |
+| Spatial indexing | Uber H3 (h3-js npm package) | Resolution 9, ~500m hexagons |
+| Payments | Razorpay Payout API (sandbox / test mode) | No real money — demo only |
+| Push notifications | FCM (Firebase free tier) | In-app and lock-screen notifications |
+| ML tracking | MLflow | Experiment tracking and model registry |
+| Weather / AQI | OpenWeather API (free tier), CPCB data | Rainfall, AQI, wind — real data for triggers 1–4 |
 
-### Guidewire Integration — Core Differentiator
+### Guidewire Integration
 
-Most teams will build claim logic outside Guidewire. We don't.
+Guidewire ClaimCenter and PolicyCenter are enterprise software, not open source. Access is provided to DEVTrails 2026 participants as part of competition resources. The integration is built against the documented Guidewire Cloud API contract; a mock layer is in place until environment credentials are confirmed.
 
-| Component | Usage |
+| Component | How We Use It |
 |---|---|
-| **Advanced Product Designer (APD)** | Define the LOB, coverages (income loss only), and explicit exclusions (no health/vehicle) |
-| **PolicyCenter Cloud API** | Weekly policy creation, renewal, cancellation via REST |
-| **ClaimCenter Cloud API** | Automated FNOL submission: `POST /claims` with trigger metadata, zone ID, payout amount |
-| **Application Events** | ClaimCenter broadcasts `claim.approved` → downstream Payout Service consumes and fires UPI |
-| **Integration Gateway (Apache Camel)** | Polls IMD/CPCB APIs, normalizes JSON, feeds Trigger Monitor |
+| **Advanced Product Designer (APD)** | Define the income insurance product, coverages, and explicit exclusions (no health, no vehicle) |
+| **PolicyCenter Cloud API** | Weekly policy creation, renewal, and cancellation |
+| **ClaimCenter Cloud API** | Automated FNOL: `POST /claims` with trigger data, H3 zone ID, payout amount |
+| **Application Events** | `claim.approved` event triggers downstream UPI payout |
 
 ---
 
-## Spatial Intelligence — Uber H3 Hexagonal Grid
+## Spatial Intelligence — Uber H3
 
-We use **Uber H3 at Resolution 9** (~500m hexagon diameter) for all zone-based operations.
+We use **Uber H3 at Resolution 9** (~500m hexagon) for all zone-based operations.
 
-**Why H3 over postal codes or districts?**
-- Postal codes in India can span 5–15km — too coarse for micro-weather events
-- H3 resolution 9 gives us 500m precision — enough to distinguish a waterlogged street from a dry one 400m away
-- H3 hexagons tile perfectly with no overlap — no ambiguity about which zone a GPS coordinate belongs to
-- All 6 fraud checks, all 5 triggers, and all premium calculations operate at H3 resolution
+- Indian postal codes span 5–15km — too coarse for localised weather events
+- H3 resolution 9 gives ~500m precision — sufficient to distinguish zone-level disruption accurately
+- Hexagons tile with no gaps or overlaps — unambiguous zone membership for any GPS coordinate
+- Every fraud check, trigger evaluation, and premium calculation is zone-pinned at H3 level
 
 ---
 
 ## 6-Layer Fraud Defense Stack
 
-Running in parallel, combined latency <50ms:
+All 6 checks run in parallel. Combined target latency: <50ms.
 
-| Layer | Technology | What It Catches | SLA |
-|---|---|---|---|
-| 1. Geospatial validation | PostGIS ST_DWithin | GPS outside triggered H3 hexagon (GPS spoofing) | <10ms |
-| 2. Deduplication | Redis SETNX lock | Multiple claims per worker per event | <5ms |
-| 3. Source verification | 2/3 API consensus | Single rogue data source falsely triggering payout | <20ms |
-| 4. Behavioural ML | Isolation Forest (score >0.72) | Unusual claim patterns, bot behaviour, timing anomalies | <35ms |
-| 5. Identity check | Device fingerprint vs eKYC VPA | New device requesting payout (SIM swap / impersonation) | <10ms |
-| 6. Loyalty signal | SafeRider Score tiers 1–5 | High-trust workers get fast-track; low-trust get extra checks | <5ms |
+| Layer | Technology | What It Catches |
+|---|---|---|
+| 1. Geospatial | PostGIS ST_DWithin | Worker GPS outside the triggered H3 zone |
+| 2. Deduplication | Redis SETNX (7-day TTL key per worker per week) | Same worker claiming the same event twice |
+| 3. Source verification | ≥2 of 3 API sources must agree | Single rogue data feed falsely triggering a payout |
+| 4. Behavioural ML | Isolation Forest anomaly score | Unusual claim frequency, timing, or pattern |
+| 5. Identity | Device fingerprint vs registered VPA | Unrecognised device requesting a payout |
+| 6. Trust signal | SafeRider Score (Tiers 1–5) | Adjusts friction level — high-trust workers fast-tracked |
 
-**Business case:** This stack reduces illegitimate claims by ~70%, bringing the raw loss ratio from 300%+ down to a commercially viable 94–96%.
+GPS zone validation eliminates claims from workers who are not in the affected area — the most common form of parametric insurance fraud. The remaining layers catch coordinated or behavioural fraud patterns. Claims flagged by the ML layer are held for manual review, not auto-denied.
 
 ---
 
 ## Novelty Features
 
 ### 1. Disruption Forecast — Daily Earnings Weather Report
-LSTM model generates a 72-hour disruption probability per H3 zone. Every worker receives a 6 AM push notification: *"73% rain risk in your zone today. Consider upgrading to Premium Shield for ₹12 extra this week."* Transforms the app from passive safety net into a daily operational tool. No product in India currently offers this to gig workers.
+Every morning, each insured worker receives a push notification with the disruption probability for their zone: *"High rain risk in your zone today. Consider upgrading your coverage for ₹12 extra this week."* This is proactive risk communication — it transforms the app from a passive safety net into a daily planning tool. No gig worker insurance product in India currently offers this. *(Phase 3 — LSTM model; Phase 2 uses rule-based estimate)*
 
 ### 2. SafeRider Score — Loyalty Lowers Your Premium
-5-tier trust and loyalty system. Workers earn score by maintaining continuous weekly coverage, filing zero fraudulent claims, and staying active. Each tier unlocks a 6% premium discount. At Tier 5 ("Champion"), the worker pays the minimum ₹49/week regardless of zone risk. Premium discount is visible in-app with a progress bar.
+A 5-tier trust and loyalty system built into the core pricing model. Workers earn score by maintaining continuous weekly coverage and filing no fraudulent claims.
 
 | Tier | Label | Premium Discount | Fraud Check |
 |---|---|---|---|
@@ -246,38 +273,46 @@ LSTM model generates a 72-hour disruption probability per H3 zone. Every worker 
 | 4 | Trusted | −18% | Minimal |
 | 5 | Champion | −24% (floor ₹49) | Fast-track |
 
-### 3. Dost Shield — Squad Pooling (Micro-Mutual Insurance)
-Groups of 5–10 workers from the same dark store voluntarily pool together. If no one in the group files a claim in a given week, every member receives 10% premium cashback the following Monday — coinciding with their Zepto payout. Social accountability reduces fraud. Community cohesion is a side effect.
+### 3. Dost Shield — Squad Pooling
+Groups of 5–10 workers from the same dark store voluntarily pool together. If no one in the group files a claim in a given week, every member receives 10% premium cashback the following Monday — timed to their Zepto/Blinkit payout. Creates social accountability against fraud and builds community among isolated workers.
 
 ### 4. Impact Widget — "What Insurance Did For You"
-Home screen widget: *"This month, you would have lost ₹2,100 without KawaachAI. You paid ₹196 in premiums. Net gain: ₹1,904."* Updated after every trigger event. The most powerful retention and referral tool in the product — makes the abstract value of insurance viscerally concrete.
+A persistent home screen widget: *"This month, disruptions would have cost you ₹2,100. You paid ₹196 in premiums."* Updated after every payout event. Makes the value of insurance tangible and concrete for daily-wage workers — the most effective retention mechanism in the product.
 
 ### 5. Vernacular UI + LLM Chatbot
-App supports Hindi, Kannada, Tamil, and Telugu. Language auto-detected from phone locale on first launch. All notifications, WhatsApp messages, and payout receipts in the worker's chosen language. LLM chatbot (Claude / Gemini API) handles onboarding in natural language colloquialisms — a worker can type *"bhai aaj policy kab milegi"* and get a proper answer.
+App supports Hindi, Kannada, Tamil, and Telugu, auto-detected from phone locale. All push notifications and payout receipts are sent in the worker's chosen language. An LLM chatbot handles onboarding queries naturally — a worker can type *"bhai aaj policy kab milegi"* and receive a clear, useful response.
+
+### 6. Risk Heatmap — Insurer Dashboard
+A live map (Leaflet + H3 hexagon layer) covering Bengaluru, Mumbai, and Delhi, colour-coded from green (low risk) to red (high disruption). Each hexagon shows active policy count, current-week claim rate, and zone loss ratio. Insurers can drill into any hexagon for weather history, claim history, and fraud flag counts. Updated every 5 minutes from the trigger polling service.
 
 ---
 
 ## Business Viability
 
-### Unit Economics (Single Worker, Bengaluru)
+### Unit Economics (Illustrative — Bengaluru worker)
 
 | Metric | Conservative | Optimistic |
 |---|---|---|
 | Weekly premium | ₹49 | ₹79 |
-| Annual revenue | ₹2,548 | ₹4,108 |
-| Disruption days/year | 18 | 28 |
-| Raw loss ratio | 318% | 327% |
-| **Post fraud-stack loss ratio** | **95%** | **98%** |
+| Annual premium revenue per worker | ₹2,548 | ₹4,108 |
+| Estimated disruption days/year (Bengaluru) | 18 | 28 |
+| Estimated annual payout per worker | ₹8,100 | ₹13,440 |
+| Raw theoretical loss ratio | ~318% | ~327% |
+| Estimated post-fraud-stack loss ratio | ~95% | ~98% |
+| Platform fee (10% of premium) | ₹255/yr | ₹411/yr |
+
+*Illustrative estimates based on publicly available Bengaluru rainfall frequency data and standard insurance industry benchmarks. Actual figures require actuarial modelling.*
+
+**Key insight:** Parametric income insurance for gig workers is only commercially viable with effective fraud prevention. The 6-layer fraud stack is the financial backbone of the business model — GPS zone validation alone eliminates claims from workers outside the affected area, the most common form of fraud in location-based parametric products.
 
 ### Regulatory Path
-- **IRDAI Micro-Insurance Guidelines 2023:** Premium <₹100/week qualifies as micro-insurance
-- **IRDAI Regulatory Sandbox 2019:** Enables a 2-year pilot without a full insurance license
-- **Social Security Code (effective Nov 2025):** Mandates gig worker protections — only 40% of platforms currently compliant
-- **Delhi Ordinance (Feb 2026):** Mandates heatstroke insurance for delivery workers
+- **IRDAI Micro-Insurance Guidelines 2023:** Premiums under ₹100/week qualify as micro-insurance — KawaachAI's entire range qualifies
+- **IRDAI Regulatory Sandbox (2019):** Enables a 2-year pilot without a full insurance license, lowering the barrier to launch
+- **Code on Social Security (2020, operational 2025):** Establishes social security obligations for platform-based gig workers — compliance is ongoing across platforms, creating demand for supplementary income protection
 
 ### Market Size
-- 7.7M gig workers today → **23.5M by 2030** (NITI Aayog, 2022)
-- 1% penetration = 235,000 weekly subscribers = **₹11.5–18.5 crore/year in premium revenue**
+- India's gig workforce: 7.7M today → projected 23.5M by 2030 (NITI Aayog, 2022)
+- Q-commerce is among the fastest-growing gig segments, with Zepto and Blinkit together operating across 20+ Indian cities
 
 ---
 
@@ -285,17 +320,17 @@ App supports Hindi, Kannada, Tamil, and Telugu. Language auto-detected from phon
 
 | Topic | Source |
 |---|---|
-| Gig worker vulnerability | NITI Aayog: *India's Booming Gig and Platform Economy* (2022) |
-| Worker conditions | Fairwork India Report 2023–2024 |
+| Gig worker data | NITI Aayog: *India's Booming Gig and Platform Economy* (2022) |
+| Worker conditions and earnings | Fairwork India Report 2023–2024 |
 | Parametric insurance | Geneva Association: *Parametric Insurance: A Primer* |
-| Parametric vs indemnity | Investopedia |
-| IRDAI regulation | IRDAI Sandbox Regulations 2019 + Micro-Insurance Guidelines 2023 |
+| Parametric vs indemnity | Investopedia: *Parametric vs Indemnity Insurance* |
+| IRDAI regulation | IRDAI Sandbox Regulations 2019; IRDAI Micro-Insurance Guidelines 2023 |
 | AI in insurance | McKinsey: *Insurance 2030 — The Impact of AI* |
-| Fraud detection ML | IEEE / Towards Data Science: anomaly detection in insurance claims |
-| Weather data | IMD Open API (rainfall), CPCB Real-time API (AQI), OpenWeather API |
-| Spatial indexing | Uber H3 documentation — h3geo.org |
-| Guidewire APIs | developer.guidewire.com — ClaimCenter + PolicyCenter REST API docs |
+| Fraud detection | scikit-learn Isolation Forest documentation |
+| Weather and AQI data | OpenWeather API (openweathermap.org); CPCB (cpcb.nic.in) |
+| Spatial indexing | Uber H3 — h3geo.org |
+| Guidewire APIs | developer.guidewire.com — ClaimCenter and PolicyCenter Cloud API documentation |
 
 ---
 
-*KawaachAI — From rain threshold breach to UPI credited in under 500 milliseconds.*  
+*KawaachAI — Parametric income protection for India's Q-commerce delivery workers.*
