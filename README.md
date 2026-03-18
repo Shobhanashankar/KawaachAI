@@ -299,4 +299,3 @@ App supports Hindi, Kannada, Tamil, and Telugu. Language auto-detected from phon
 ---
 
 *KawaachAI — From rain threshold breach to UPI credited in under 500 milliseconds.*  
-*Build fast. Submit on time. Never let DC hit zero. Win DemoJam.*
