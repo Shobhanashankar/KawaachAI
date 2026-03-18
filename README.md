@@ -281,19 +281,6 @@ App supports Hindi, Kannada, Tamil, and Telugu. Language auto-detected from phon
 
 ---
 
-## Phase Roadmap
-
-| Phase | Dates | Deliverables |
-|---|---|---|
-| **Phase 1 — Seed** | Mar 4–20 | README + 2-min strategy video |
-| **Stealth Window** | Mar 20–Apr 1 | Schemas, mock APIs, wireframes, Guidewire trial setup |
-| **Phase 2 — Scale** | Apr 1–4 (72hrs) | Registration, premium engine, 3 triggers, ClaimCenter FNOL, claims flow |
-| **Phase 3 — Soar** | Apr 5–17 | Full fraud stack, Razorpay payouts, dual dashboards, novelty features, 5-min demo, pitch deck |
-
----
-
-
-
 ## References
 
 | Topic | Source |
