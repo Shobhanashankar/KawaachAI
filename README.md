@@ -3,6 +3,7 @@
 > **Guidewire DEVTrails 2026** · Persona: Q-Commerce (Zepto & Blinkit) · Phase 1 — March 20, 2026
 
 ---
+**Try the live demo:** [KawaachAI Tryout](https://kawaach-ai-tryout.vercel.app/)
 
 ## The Problem
 
