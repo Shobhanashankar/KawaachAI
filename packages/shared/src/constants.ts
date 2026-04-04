@@ -20,3 +20,14 @@ export const PAYOUTS = {
   CURFEW: 0.75,
   PLATFORM_DOWN: 0.4,
 } as const;
+
+export const RBA_THRESHOLDS = {
+  SOFT_HOLD: 0.4,
+  STEP_UP: 0.72,
+  TRUSTED_STEP_UP: 0.85,
+} as const;
+
+export const FRAUD_TIMERS = {
+  SOFT_HOLD_MS: 2 * 60 * 60 * 1000,
+  STEP_UP_TIMEOUT_MS: 4 * 60 * 60 * 1000,
+} as const;
