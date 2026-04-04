@@ -16,6 +16,8 @@
     "seed": "npm run -w @kawaachai/shared seed",
     "setup:db": "npm run migrate && npm run seed",
     "smoke": "tsx scripts/smoke-spec01.ts",
+    "smoke:spec02": "tsx scripts/smoke-spec02.ts",
+    "retrain-fraud-model": "python3 scripts/train_fraud_model.py",
     "format": "prettier --write \"**/*.{ts,js,json,md,yml,yaml}\""
   },
   "devDependencies": {
