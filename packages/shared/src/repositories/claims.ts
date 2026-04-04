@@ -1,5 +1,5 @@
 import { query } from '../db';
-import { ClaimRow, ClaimStatus, DisruptionEvent } from '../types';
+import { ClaimRow, ClaimStatus, DisruptionEvent, FraudDetail, RBAOutcome } from '../types';
 
 export interface CreateClaimInput {
   event: DisruptionEvent;
@@ -35,6 +35,9 @@ export const createClaim = async (input: CreateClaimInput): Promise<ClaimRow | n
         severity,
         payout_pct::float8,
         fraud_score::float8,
+        fraud_latency_ms,
+        rba_outcome,
+        fraud_detail,
         status,
         guidewire_status,
         guidewire_claim_id,
@@ -61,6 +64,9 @@ export const updateClaimStatus = async (
   status: ClaimStatus,
   options?: {
     fraudScore?: number;
+    fraudLatencyMs?: number;
+    rbaOutcome?: RBAOutcome;
+    fraudDetail?: FraudDetail;
     guidewireStatus?: string;
     guidewireClaimId?: string;
     errorReason?: string | null;
@@ -71,9 +77,12 @@ export const updateClaimStatus = async (
       UPDATE claims
       SET status = $2,
           fraud_score = COALESCE($3, fraud_score),
-          guidewire_status = COALESCE($4, guidewire_status),
-          guidewire_claim_id = COALESCE($5, guidewire_claim_id),
-          error_reason = COALESCE($6, error_reason),
+          fraud_latency_ms = COALESCE($4, fraud_latency_ms),
+          rba_outcome = COALESCE($5, rba_outcome),
+          fraud_detail = COALESCE($6::jsonb, fraud_detail),
+          guidewire_status = COALESCE($7, guidewire_status),
+          guidewire_claim_id = COALESCE($8, guidewire_claim_id),
+          error_reason = COALESCE($9, error_reason),
           updated_at = now()
       WHERE id = $1::uuid
     `,
@@ -81,6 +90,9 @@ export const updateClaimStatus = async (
       claimId,
       status,
       typeof options?.fraudScore === 'number' ? options.fraudScore : null,
+      typeof options?.fraudLatencyMs === 'number' ? options.fraudLatencyMs : null,
+      options?.rbaOutcome ?? null,
+      options?.fraudDetail ? JSON.stringify(options.fraudDetail) : null,
       options?.guidewireStatus ?? null,
       options?.guidewireClaimId ?? null,
       options?.errorReason ?? null,
@@ -114,6 +126,9 @@ export const getClaimById = async (claimId: string): Promise<ClaimRow | null> =>
         severity,
         payout_pct::float8,
         fraud_score::float8,
+        fraud_latency_ms,
+        rba_outcome,
+        fraud_detail,
         status,
         guidewire_status,
         guidewire_claim_id,
@@ -140,6 +155,9 @@ export const getClaimsByWorker = async (workerId: string): Promise<ClaimRow[]> =
         severity,
         payout_pct::float8,
         fraud_score::float8,
+        fraud_latency_ms,
+        rba_outcome,
+        fraud_detail,
         status,
         guidewire_status,
         guidewire_claim_id,
@@ -153,4 +171,39 @@ export const getClaimsByWorker = async (workerId: string): Promise<ClaimRow[]> =
     [workerId],
   );
   return result.rows;
+};
+
+export const getClaimByIdAndStatus = async (
+  claimId: string,
+  status: ClaimStatus,
+): Promise<ClaimRow | null> => {
+  const result = await query<ClaimRow>(
+    `
+      SELECT
+        id::text,
+        event_id::text,
+        policy_id,
+        worker_id,
+        h3_zone,
+        trigger_type,
+        severity,
+        payout_pct::float8,
+        fraud_score::float8,
+        fraud_latency_ms,
+        rba_outcome,
+        fraud_detail,
+        status,
+        guidewire_status,
+        guidewire_claim_id,
+        created_at::text,
+        updated_at::text
+      FROM claims
+      WHERE id = $1::uuid
+        AND status = $2
+      LIMIT 1
+    `,
+    [claimId, status],
+  );
+
+  return result.rows[0] ?? null;
 };
