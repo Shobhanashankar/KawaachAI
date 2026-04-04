@@ -1,0 +1,33 @@
+{
+  "name": "kawaachai",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:trigger\" \"npm run dev:claims\"",
+    "dev:trigger": "npm run -w @kawaachai/trigger-monitor dev",
+    "dev:claims": "npm run -w @kawaachai/claims-service dev",
+    "build": "npm run -ws build",
+    "lint": "npm run -ws lint",
+    "test": "npm run -ws test",
+    "migrate": "npm run -w @kawaachai/shared migrate",
+    "seed": "npm run -w @kawaachai/shared seed",
+    "setup:db": "npm run migrate && npm run seed",
+    "smoke": "tsx scripts/smoke-spec01.ts",
+    "format": "prettier --write \"**/*.{ts,js,json,md,yml,yaml}\""
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.11",
+    "@types/node": "^22.13.4",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.21.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^8.57.1",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}
