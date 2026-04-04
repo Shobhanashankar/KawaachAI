@@ -140,7 +140,6 @@ export default function SettingsScreen() {
         {[
           { key: 'profile', icon: '👤', label: t('settings.profile') },
           { key: 'policy_details', icon: '📄', label: t('settings.policy_details') },
-          { key: 'premium_history', icon: '💳', label: t('settings.premium_history') },
           { key: 'help', icon: '❓', label: t('settings.help') },
           { key: 'about', icon: 'ℹ️', label: t('settings.about') },
         ].map((item) => (
@@ -166,9 +165,9 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   content: { padding: Spacing.lg, paddingTop: Spacing.xxl + Spacing.lg, paddingBottom: Spacing.xxl * 2 },
   title: { fontSize: FontSizes.xxl, fontWeight: FontWeights.bold, color: Colors.textPrimary, marginBottom: Spacing.lg },
-  section: { marginBottom: Spacing.lg },
+  section: { marginBottom: Spacing.xl },
   sectionTitle: { color: Colors.textMuted, fontSize: FontSizes.xs, fontWeight: FontWeights.semibold, letterSpacing: 1, marginBottom: Spacing.sm, textTransform: 'uppercase' },
-  settingRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.surface, borderRadius: BorderRadius.md, padding: Spacing.md, marginBottom: 2, gap: Spacing.md },
+  settingRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.surface, borderRadius: BorderRadius.md, padding: Spacing.md, marginBottom: Spacing.sm, gap: Spacing.md },
   settingIcon: { fontSize: 20, width: 28 },
   settingLabel: { flex: 1, color: Colors.textPrimary, fontSize: FontSizes.md },
   settingValue: { color: Colors.accent, fontSize: FontSizes.sm },
