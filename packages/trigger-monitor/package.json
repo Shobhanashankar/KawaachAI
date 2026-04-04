@@ -1,0 +1,25 @@
+{
+  "name": "@kawaachai/trigger-monitor",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "SERVICE_NAME=trigger-monitor tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@kawaachai/shared": "0.1.0",
+    "axios": "^1.8.1",
+    "express": "^4.21.2",
+    "ioredis": "^5.4.2",
+    "kafkajs": "^2.2.4",
+    "p-limit": "^6.2.0",
+    "uuid": "^11.0.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}
