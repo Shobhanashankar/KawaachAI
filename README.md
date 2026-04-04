@@ -5,6 +5,72 @@
 ---
 **Try the live demo:** [KawaachAI Tryout](https://kawaach-ai-tryout.vercel.app/)
 
+## Phase 2 Backend Quick Start (SPEC-01)
+
+The monorepo implementation for SPEC-01 is now scaffolded with three packages:
+
+- `packages/shared`
+- `packages/trigger-monitor`
+- `packages/claims-service`
+
+### Prerequisites
+
+- Node.js 20+
+- npm 10+
+- Docker Desktop running
+
+### Run Locally
+
+1. Install dependencies.
+
+```bash
+npm install
+```
+
+2. Copy environment template and fill API credentials.
+
+```bash
+cp .env.example .env
+```
+
+3. Start core infrastructure.
+
+```bash
+docker compose up -d postgres redis kafka
+```
+
+4. Apply schema and seed demo data.
+
+```bash
+npm run setup:db
+```
+
+5. Start services in separate terminals.
+
+```bash
+npm run dev:trigger
+npm run dev:claims
+```
+
+6. Run smoke checks.
+
+```bash
+ADMIN_BEARER_TOKEN=change-me npm run smoke
+```
+
+### Implemented Endpoints (SPEC-01 scope)
+
+- Trigger Monitor
+        - `GET /health`
+        - `GET /admin/exclusions`
+        - `PATCH /admin/exclusions`
+        - `POST /webhooks/curfew`
+        - `POST /webhooks/platform-downtime`
+- Claims Service
+        - `GET /health`
+        - `GET /claims/:claimId`
+        - `GET /claims?workerId=`
+
 ## The Problem
 
 Ravi delivers groceries for Zepto in Bengaluru. Last monsoon, several days of heavy rain halted all deliveries in his zone. He lost his week's wages — no refund, no compensation, no safety net. He had no insurance. Neither did any of his fellow Q-commerce delivery workers.
