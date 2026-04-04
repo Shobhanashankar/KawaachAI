@@ -56,6 +56,14 @@ npm run dev:claims
 
 ```bash
 ADMIN_BEARER_TOKEN=change-me npm run smoke
+ADMIN_BEARER_TOKEN=change-me npm run smoke:spec02
+```
+
+7. (Optional) retrain SPEC-02 fraud model artifacts.
+
+```bash
+python3 -m pip install -r scripts/requirements-fraud-model.txt
+npm run retrain-fraud-model
 ```
 
 ### Implemented Endpoints (SPEC-01 scope)
