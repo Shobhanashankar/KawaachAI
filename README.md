@@ -1,15 +1,96 @@
 # KawaachAI — Parametric Income Insurance for Q-Commerce Delivery Workers
 
-> **Guidewire DEVTrails 2026** · Persona: Q-Commerce (Zepto & Blinkit) · Phase 1 — March 20, 2026
+> **Guidewire DEVTrails 2026** · Persona: Q-Commerce (Zepto & Blinkit) · Phase 1 Tryout + Phase 2 Scale Build
 
 ---
-**Try the live demo:** [KawaachAI Tryout](https://kawaach-ai-tryout.vercel.app/)
 
-## SPEC-05 One-Command Startup
+## Phase Submission and Demo Links
 
-From repository root, start the full stack (core services + SPEC-05 admin API + admin dashboard):
+- Phase submission: https://youtu.be/1O0Ji52vlDs
+- Vercel Demo UI Simulation - Phase 1: https://kawaach-ai-tryout.vercel.app
+- Lovable Interactive Prototype Recommended - Phase 2: https://kawaachai.lovable.app/
+- Phase 1 video: https://drive.google.com/file/d/18BGeOGgcQhcDtnOBkeGgi34ow_QF8eCB/view?usp=share_link
+
+## Project Status (April 2026)
+
+All five specs are implemented in this repository and integrated at module level.
+
+| Spec | Scope | Primary Implementation | Status |
+|---|---|---|---|
+| SPEC-01 | Trigger engine + exclusions + claims fan-out + FNOL path | `packages/trigger-monitor`, `packages/claims-service`, `packages/shared` | Complete |
+| SPEC-02 | Six-layer fraud, RBA, ring detection, fraud detail persistence | `packages/claims-service`, `packages/shared`, `scripts/smoke-spec02.ts` | Complete |
+| SPEC-03 | Premium engine, SafeRider tiers, Dost Shield squads, Razorpay workflows | `premium-service` | Complete |
+| SPEC-04 | Worker mobile app, onboarding, claims timeline, step-up flow, i18n | `packages/mobile-app` | Complete |
+| SPEC-05 | Admin API + dashboard, heatmap, fraud monitor, manual review + LLM summary | `packages/spec5/admin-api`, `packages/spec5/admin-dashboard` | Complete |
+
+## Specs Delivery Map
+
+```mermaid
+flowchart LR
+                S1[SPEC-01 Trigger and Claims] --> S2[SPEC-02 Fraud and RBA]
+                S1 --> S3[SPEC-03 Premium and Policy]
+                S3 --> S4[SPEC-04 Worker Mobile App]
+                S1 --> S5[SPEC-05 Admin and Observability]
+                S2 --> S5
+                S3 --> S5
+                S4 --> S5
+
+                classDef done fill:#dff5e1,stroke:#2f7d32,stroke-width:2px,color:#111;
+                class S1,S2,S3,S4,S5 done;
+```
+
+## What Is Achieved
+
+1. End-to-end parametric claim flow is operational: disruption detection -> Kafka event -> claim fan-out -> fraud gate -> FNOL submission path.
+2. Six-layer anti-spoofing and fraud defense is implemented with persisted feature vectors, SHAP-style detail, RBA outcomes, and ring analytics endpoints.
+3. Premium and policy track is built in a dedicated service with worker onboarding APIs, SafeRider logic, squad cashback, cron-based billing, and payout/webhook flows.
+4. Mobile app track is implemented with onboarding, home/claims/squad/settings tabs, step-up verification screen, and multilingual bundles (en, hi, kn, ta, te).
+5. Admin track is implemented with KPI overview, H3 heatmap, fraud monitor, manual review queue, LLM summary endpoint, exclusions panel, and Prometheus metrics exposure.
+
+## Runway (Phase 3 Final)
+
+1. Unify deployment so SPEC-03 premium-service and SPEC-04 app backend dependencies are orchestrated in the same top-level environment profile.
+2. Add production auth/RBAC hardening for admin and internal APIs (current bearer-based flow is competition-ready, not enterprise-final).
+3. Add CI pipelines that execute cross-spec integration tests (SPEC-01 -> SPEC-05), plus mobile E2E tests and contract checks.
+4. Complete cloud deployment artifacts (managed Kafka/Postgres/Redis, secrets manager wiring, staged rollout policy, SLO dashboards).
+
+```mermaid
+flowchart LR
+                A[All 5 Specs Complete] --> B[Unified Environment and Integration Tests]
+                B --> C[Security and RBAC Hardening]
+                C --> D[Cloud Staging and Load Validation]
+                D --> E[Production Rollout and Monitoring]
+```
+
+### Final Delivery Phase (Phase 3)
+
+Phase 3 is the last phase for this project. The target is full end-to-end completion across all 5 specs.
+
+| Phase | Objective | Exit Criteria |
+|---|---|---|
+| Phase 3 (Final) | Production-ready integrated platform | Unified deployment for SPEC-01 to SPEC-05, auth/RBAC hardening, cross-spec CI + E2E tests, staging load/failure validation, production rollout with monitoring sign-off |
+
+```mermaid
+flowchart LR
+        P2[Phase 2: Specs 1 to 5 Implemented] --> P3A[Phase 3: Integration and Deployment Unification]
+        P3A --> P3B[Phase 3: Security and Test Hardening]
+        P3B --> P3C[Phase 3: Staging Validation and Rollback Readiness]
+        P3C --> DONE[Phase 3 Complete: Full Project E2E Done]
+```
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 20+
+- npm 10+
+- Docker Desktop running
+
+### 1) Start Core Stack (SPEC-01, SPEC-02, SPEC-05)
 
 ```bash
+npm install
+cp .env.example .env
 docker compose up -d --build
 ```
 
@@ -22,82 +103,58 @@ Default URLs:
 
 Notes:
 
-- `db-init` runs migrations + seed automatically before app services start.
-- SPEC-05 seeded demo claims are inserted automatically by `spec5-admin-api` when `SPEC5_RUN_SEED=true`.
+- `db-init` runs migrations + seed before app services start.
+- SPEC-05 demo claims seed automatically when `SPEC5_RUN_SEED=true`.
 
-## Phase 2 Backend Quick Start (SPEC-01)
-
-The monorepo implementation for SPEC-01 is now scaffolded with three packages:
-
-- `packages/shared`
-- `packages/trigger-monitor`
-- `packages/claims-service`
-
-### Prerequisites
-
-- Node.js 20+
-- npm 10+
-- Docker Desktop running
-
-### Run Locally
-
-1. Install dependencies.
-
-```bash
-npm install
-```
-
-2. Copy environment template and fill API credentials.
-
-```bash
-cp .env.example .env
-```
-
-3. Start core infrastructure.
-
-```bash
-docker compose up -d postgres redis kafka
-```
-
-4. Apply schema and seed demo data.
-
-```bash
-npm run setup:db
-```
-
-5. Start services in separate terminals.
-
-```bash
-npm run dev:trigger
-npm run dev:claims
-```
-
-6. Run smoke checks.
+### 2) Run SPEC-01 and SPEC-02 Smoke Checks
 
 ```bash
 ADMIN_BEARER_TOKEN=change-me npm run smoke
 ADMIN_BEARER_TOKEN=change-me npm run smoke:spec02
 ```
 
-7. (Optional) retrain SPEC-02 fraud model artifacts.
+### 3) Run SPEC-03 Premium Service
 
 ```bash
-python3 -m pip install -r scripts/requirements-fraud-model.txt
-npm run retrain-fraud-model
+cd premium-service
+npm install
+cp .env.example .env
+npm run dev
 ```
 
-### Implemented Endpoints (SPEC-01 scope)
+### 4) Run SPEC-04 Mobile App
 
-- Trigger Monitor
-        - `GET /health`
-        - `GET /admin/exclusions`
-        - `PATCH /admin/exclusions`
-        - `POST /webhooks/curfew`
-        - `POST /webhooks/platform-downtime`
-- Claims Service
-        - `GET /health`
-        - `GET /claims/:claimId`
-        - `GET /claims?workerId=`
+```bash
+cd packages/mobile-app
+npm install
+npm run start
+```
+
+## Runtime Topology (Current)
+
+```mermaid
+graph TD
+                TM[Trigger Monitor] --> K[(Kafka)]
+                K --> CS[Claims Service]
+                CS --> DB[(PostgreSQL)]
+                CS --> R[(Redis)]
+                AA[SPEC-05 Admin API] --> CS
+                AA --> TM
+                AD[SPEC-05 Admin Dashboard] --> AA
+                PS[SPEC-03 Premium Service] --> DB
+                MA[SPEC-04 Mobile App] --> PS
+                MA --> CS
+```
+
+### Implemented Endpoints Snapshot
+
+- SPEC-01 and SPEC-02
+        - Trigger Monitor: `GET /health`, `GET /admin/exclusions`, `PATCH /admin/exclusions`, `POST /webhooks/curfew`, `POST /webhooks/platform-downtime`
+        - Claims Service: `GET /health`, `GET /claims/:claimId`, `GET /claims?workerId=`, `GET /admin/fraud/rings`, `GET /admin/fraud/layer-stats`
+- SPEC-03
+        - Premium Service: `/api/v1/workers/*`, `/api/v1/squads/*`, `/api/v1/payouts/*`, `/api/v1/webhooks/*`
+- SPEC-05
+        - Admin API: `GET /health`, `GET /metrics`, `/admin/claims`, `/admin/heatmap`, `/admin/fraud/layer-stats`, `/admin/fraud/rings`, `/admin/exclusions`, `/admin/claims/:claimId/llm-review`
 
 ## The Problem
 
@@ -158,36 +215,24 @@ Q-commerce delivery workers earn ₹350–600/day working 6 days/week (Fairwork 
 
 ## How It Works — End-to-End Flow
 
+```mermaid
+flowchart TD
+    D[External Disruption: Rain, AQI, Wind, Curfew, Platform Downtime] --> T[Trigger Monitor]
+    T -->|Threshold breach and exclusions check| K[(Kafka: disruption-events)]
+    K --> C[Claims Service]
+    C --> F[Fraud Engine < 50ms target]
+    F --> L1[Layer 1: OS mock check]
+    F --> L2[Layer 2: GPS zone validation]
+    F --> L3[Layer 3: Redis dedup lock]
+    F --> L4[Layer 4: Source consensus]
+    F --> L5[Layer 5: Sensor plus model score]
+    F --> L6[Layer 6: SafeRider trust]
+    F --> G[Guidewire ClaimCenter FNOL]
+    G --> P[Razorpay payout pipeline]
+    P --> W[Worker credited plus push notification]
 ```
-External Disruption (Rain / AQI / Wind / Curfew / Platform Downtime)
-        │
-        ▼
-Trigger Monitor — polls OpenWeather (rainfall + wind) and CPCB (AQI) every 5 min per H3 zone
-        │  Threshold breached
-        ▼
-Kafka event published → disruption-events topic
-        │
-        ▼
-Claims Service ──► Fraud Engine (checks run in parallel, target <50ms)
-        │                    │
-        │              [1. OS mock location check]
-        │              [2. GPS zone check — PostGIS ST_DWithin]
-        │              [3. Dedup lock — Redis SETNX]
-        │              [4. Multi-source cross-validation]
-        │              [5. Sensor physics + Isolation Forest score]
-        │              [6. SafeRider trust score]
-        │
-        ▼  (all checks pass)
-Guidewire ClaimCenter — automated FNOL via Cloud API
-        │  Claim: Draft → Open
-        ▼
-Payout Service → Razorpay Payout API (sandbox / test mode)
-        │
-        ▼
-Worker receives ₹ credit + FCM push notification
 
-Target automated claim path: <500ms on local demo environment
-```
+Target automated claim path: <500ms on local demo environment.
 
 ---
 
