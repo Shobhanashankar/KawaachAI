@@ -48,6 +48,21 @@ services:
       timeout: 10s
       retries: 10
 
+  db-init:
+    image: node:20-alpine
+    working_dir: /workspace
+    env_file:
+      - .env.example
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/kawaachai
+    volumes:
+      - .:/workspace
+    command: sh -c "npm ci && npm run setup:db"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: 'no'
+
   trigger-monitor:
     build:
       context: .
@@ -60,6 +75,8 @@ services:
       KAFKA_BROKERS: kafka:9092
       TRIGGER_MONITOR_PORT: 3001
     depends_on:
+      db-init:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       redis:
@@ -81,6 +98,8 @@ services:
       KAFKA_BROKERS: kafka:9092
       CLAIMS_SERVICE_PORT: 3002
     depends_on:
+      db-init:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       redis:
@@ -89,3 +108,46 @@ services:
         condition: service_healthy
     ports:
       - '3002:3002'
+
+  spec5-admin-api:
+    build:
+      context: .
+      dockerfile: packages/spec5/admin-api/Dockerfile
+    env_file:
+      - .env.example
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/kawaachai
+      SPEC5_ADMIN_API_PORT: 3010
+      ADMIN_BEARER_TOKEN: ${ADMIN_BEARER_TOKEN:-change-me}
+      CLAIMS_BASE_URL: http://claims-service:3002
+      TRIGGER_BASE_URL: http://trigger-monitor:3001
+      SPEC5_LLM_PROVIDER: ${SPEC5_LLM_PROVIDER:-anthropic}
+      SPEC5_LLM_MODEL: ${SPEC5_LLM_MODEL:-claude-sonnet-4-20250514}
+      SPEC5_LLM_API_KEY: ${SPEC5_LLM_API_KEY:-}
+      SPEC5_LLM_TIMEOUT_MS: ${SPEC5_LLM_TIMEOUT_MS:-10000}
+      SPEC5_RUN_SEED: ${SPEC5_RUN_SEED:-true}
+      LOG_LEVEL: info
+      SERVICE_NAME: spec5-admin-api
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+      trigger-monitor:
+        condition: service_started
+      claims-service:
+        condition: service_started
+    ports:
+      - '3010:3010'
+
+  spec5-admin-dashboard:
+    build:
+      context: .
+      dockerfile: packages/spec5/admin-dashboard/Dockerfile
+      args:
+        VITE_ADMIN_API_BASE_URL: ${VITE_ADMIN_API_BASE_URL:-http://localhost:3010}
+        VITE_ADMIN_BEARER_TOKEN: ${VITE_ADMIN_BEARER_TOKEN:-change-me}
+        VITE_ADMIN_USER: ${VITE_ADMIN_USER:-spec5-admin-ui}
+    depends_on:
+      spec5-admin-api:
+        condition: service_started
+    ports:
+      - '5178:80'

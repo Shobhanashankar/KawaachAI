@@ -5,6 +5,26 @@
 ---
 **Try the live demo:** [KawaachAI Tryout](https://kawaach-ai-tryout.vercel.app/)
 
+## SPEC-05 One-Command Startup
+
+From repository root, start the full stack (core services + SPEC-05 admin API + admin dashboard):
+
+```bash
+docker compose up -d --build
+```
+
+Default URLs:
+
+- Trigger Monitor: `http://localhost:3001`
+- Claims Service: `http://localhost:3002`
+- SPEC-05 Admin API: `http://localhost:3010`
+- SPEC-05 Admin Dashboard: `http://localhost:5178`
+
+Notes:
+
+- `db-init` runs migrations + seed automatically before app services start.
+- SPEC-05 seeded demo claims are inserted automatically by `spec5-admin-api` when `SPEC5_RUN_SEED=true`.
+
 ## Phase 2 Backend Quick Start (SPEC-01)
 
 The monorepo implementation for SPEC-01 is now scaffolded with three packages:
