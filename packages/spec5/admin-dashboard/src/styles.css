@@ -277,6 +277,18 @@ select {
   margin-right: 6px;
 }
 
+.heatmap-map {
+  border: 1px solid rgba(27, 35, 31, 0.08);
+}
+
+.heatmap-map .leaflet-tile-pane {
+  filter: saturate(0.72) contrast(0.95) brightness(1.03);
+}
+
+.heatmap-map .leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.72);
+}
+
 @media (max-width: 980px) {
   .topbar,
   .split-2,

@@ -96,24 +96,26 @@ const extractJsonObject = (raw: string): Record<string, unknown> | null => {
   }
 };
 
-const runAnthropic = async (prompt: string): Promise<{ parsed: LlmReviewResult | null; raw: string }> => {
+const runGroq = async (prompt: string): Promise<{ parsed: LlmReviewResult | null; raw: string }> => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), adminApiConfig.llmTimeoutMs);
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-api-key': adminApiConfig.llmApiKey,
-        'anthropic-version': '2023-06-01',
+        authorization: `Bearer ${adminApiConfig.llmApiKey}`,
       },
       body: JSON.stringify({
         model: adminApiConfig.llmModel,
         max_tokens: 700,
         temperature: 0.1,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt },
+        ],
       }),
       signal: controller.signal,
     });
@@ -124,10 +126,12 @@ const runAnthropic = async (prompt: string): Promise<{ parsed: LlmReviewResult |
     }
 
     const payload = (await response.json()) as {
-      content?: Array<{ type?: string; text?: string }>;
+      choices?: Array<{
+        message?: { content?: string | null };
+      }>;
     };
 
-    const rawText = payload.content?.find((part) => part.type === 'text')?.text ?? '';
+    const rawText = payload.choices?.[0]?.message?.content ?? '';
     const parsedJson = extractJsonObject(rawText);
     if (!parsedJson) {
       return { parsed: null, raw: rawText };
@@ -158,7 +162,7 @@ export const generateLlmReview = async (context: LlmPromptContext): Promise<Gene
   }
 
   try {
-    const run = await runAnthropic(prompt);
+    const run = await runGroq(prompt);
     if (!run.parsed) {
       return {
         available: false,

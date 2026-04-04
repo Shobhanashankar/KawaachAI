@@ -49,10 +49,16 @@ export function HeatmapPage() {
           </select>
         </div>
 
-        <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: 470, borderRadius: 12 }} preferCanvas>
+        <MapContainer
+          center={[20.5937, 78.9629]}
+          zoom={5}
+          style={{ height: 470, borderRadius: 12 }}
+          preferCanvas
+          className="heatmap-map"
+        >
           <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution="&copy; OpenStreetMap contributors, &copy; CARTO"
+            url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
           />
           <H3HexLayer zones={zones} mode={layerMode} onSelect={setSelectedZone} />
         </MapContainer>

@@ -121,8 +121,8 @@ services:
       ADMIN_BEARER_TOKEN: ${ADMIN_BEARER_TOKEN:-change-me}
       CLAIMS_BASE_URL: http://claims-service:3002
       TRIGGER_BASE_URL: http://trigger-monitor:3001
-      SPEC5_LLM_PROVIDER: ${SPEC5_LLM_PROVIDER:-anthropic}
-      SPEC5_LLM_MODEL: ${SPEC5_LLM_MODEL:-claude-sonnet-4-20250514}
+      SPEC5_LLM_PROVIDER: ${SPEC5_LLM_PROVIDER:-groq}
+      SPEC5_LLM_MODEL: ${SPEC5_LLM_MODEL:-llama-3.1-8b-instant}
       SPEC5_LLM_API_KEY: ${SPEC5_LLM_API_KEY:-}
       SPEC5_LLM_TIMEOUT_MS: ${SPEC5_LLM_TIMEOUT_MS:-10000}
       SPEC5_RUN_SEED: ${SPEC5_RUN_SEED:-true}
