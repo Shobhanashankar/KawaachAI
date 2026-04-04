@@ -1,0 +1,147 @@
+# KawaachAI — premium-service Helm values
+# Deploy: helm upgrade --install premium-service ./helm -f helm/values.yaml -n kawaachai
+
+replicaCount: 2
+
+image:
+  repository: kawaachai/premium-service
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+nameOverride: "premium-service"
+fullnameOverride: "premium-service"
+
+service:
+  type: ClusterIP
+  port: 3003
+  targetPort: 3003
+
+# ─── Resources ────────────────────────────────────────────────────────────────
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+# ─── Autoscaling (HPA) ────────────────────────────────────────────────────────
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 8
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# ─── Probes ───────────────────────────────────────────────────────────────────
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 3003
+  initialDelaySeconds: 20
+  periodSeconds: 15
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 3003
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+# ─── Environment Variables (non-secret) ───────────────────────────────────────
+env:
+  NODE_ENV: production
+  PORT: "3003"
+  LOG_LEVEL: info
+  DB_HOST: postgresql.kawaachai.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: kawaachai
+  KAFKA_BROKERS: kafka.kawaachai.svc.cluster.local:9092
+  KAFKA_CLIENT_ID: premium-service
+  KAFKA_GROUP_ID: premium-service-group
+  ML_SERVICE_URL: http://ml-service.kawaachai.svc.cluster.local:8000
+  ML_SERVICE_TIMEOUT_MS: "200"
+  WEEKLY_DEDUCTION_CRON: "30 0 * * 1"
+  DOST_CASHBACK_CRON: "30 1 * * 1"
+
+# ─── Secrets (reference K8s Secrets) ─────────────────────────────────────────
+secretEnv:
+  - name: DB_USER
+    secretKeyRef:
+      name: premium-service-secrets
+      key: db-user
+  - name: DB_PASSWORD
+    secretKeyRef:
+      name: premium-service-secrets
+      key: db-password
+  - name: RAZORPAY_KEY_ID
+    secretKeyRef:
+      name: premium-service-secrets
+      key: razorpay-key-id
+  - name: RAZORPAY_KEY_SECRET
+    secretKeyRef:
+      name: premium-service-secrets
+      key: razorpay-key-secret
+  - name: RAZORPAY_WEBHOOK_SECRET
+    secretKeyRef:
+      name: premium-service-secrets
+      key: razorpay-webhook-secret
+  - name: RAZORPAY_ACCOUNT_NUMBER
+    secretKeyRef:
+      name: premium-service-secrets
+      key: razorpay-account-number
+
+# ─── Pod Disruption Budget ────────────────────────────────────────────────────
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# ─── Ingress ──────────────────────────────────────────────────────────────────
+ingress:
+  enabled: false   # Set true when using Nginx ingress controller
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: premium-service.kawaachai.internal
+      paths:
+        - path: /
+          pathType: Prefix
+
+# ─── Node Selector / Tolerations ─────────────────────────────────────────────
+nodeSelector: {}
+tolerations: []
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - premium-service
+          topologyKey: kubernetes.io/hostname
+
+# ─── Service Account ──────────────────────────────────────────────────────────
+serviceAccount:
+  create: true
+  name: premium-service-sa
+
+# ─── KEDA ScaledObject (Kafka consumer lag autoscaling) ──────────────────────
+keda:
+  enabled: true
+  pollingInterval: 15
+  cooldownPeriod: 60
+  minReplicaCount: 2
+  maxReplicaCount: 10
+  triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka.kawaachai.svc.cluster.local:9092
+        consumerGroup: premium-service-group
+        topic: claims.approved
+        lagThreshold: "10"
+        offsetResetPolicy: latest
