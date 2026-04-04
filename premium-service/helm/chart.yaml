@@ -1,0 +1,12 @@
+apiVersion: v2
+name: premium-service
+description: KawaachAI Premium Service — SPEC-03
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - kawaachai
+  - insurance
+  - premium
+maintainers:
+  - name: KawaachAI Team
