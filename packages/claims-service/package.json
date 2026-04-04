@@ -1,0 +1,25 @@
+{
+  "name": "@kawaachai/claims-service",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "SERVICE_NAME=claims-service tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint --no-error-on-unmatched-pattern \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@kawaachai/shared": "0.1.0",
+    "axios": "^1.8.1",
+    "bullmq": "^5.40.3",
+    "express": "^4.21.2",
+    "ioredis": "^5.4.2",
+    "kafkajs": "^2.2.4",
+    "p-limit": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}
