@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { DEFAULT_THRESHOLDS } from './constants';
+import { DEFAULT_THRESHOLDS, FRAUD_TIMERS } from './constants';
 
 dotenv.config();
 
@@ -30,5 +30,9 @@ export const config = {
     aqiDurationHours: toNumber(process.env.AQI_DURATION_HOURS, DEFAULT_THRESHOLDS.AQI_DURATION_HOURS),
     windThresholdKmph: toNumber(process.env.WIND_THRESHOLD_KMPH, DEFAULT_THRESHOLDS.WIND_THRESHOLD_KMPH),
     platformDowntimeHours: toNumber(process.env.PLATFORM_DOWNTIME_HOURS, DEFAULT_THRESHOLDS.PLATFORM_DOWNTIME_HOURS),
+  },
+  fraud: {
+    softHoldMs: toNumber(process.env.SOFT_HOLD_MS, FRAUD_TIMERS.SOFT_HOLD_MS),
+    stepUpTimeoutMs: toNumber(process.env.STEP_UP_TIMEOUT_MS, FRAUD_TIMERS.STEP_UP_TIMEOUT_MS),
   },
 };
