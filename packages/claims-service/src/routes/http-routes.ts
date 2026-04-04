@@ -1,5 +1,11 @@
 import { Express } from 'express';
-import { getClaimById, getClaimsByWorker } from '@kawaachai/shared';
+import {
+  getActiveFraudRings,
+  getClaimById,
+  getClaimsByWorker,
+  getFraudLayerStats,
+} from '@kawaachai/shared';
+import { requireAdminBearer } from '../utils/auth';
 
 export const registerHttpRoutes = (app: Express): void => {
   app.get('/health', (_req, res) => {
@@ -28,6 +34,24 @@ export const registerHttpRoutes = (app: Express): void => {
       }
       const claims = await getClaimsByWorker(workerId);
       res.json({ claims });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get('/admin/fraud/rings', requireAdminBearer, async (_req, res, next) => {
+    try {
+      const rings = await getActiveFraudRings();
+      res.json({ rings });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get('/admin/fraud/layer-stats', requireAdminBearer, async (_req, res, next) => {
+    try {
+      const stats = await getFraudLayerStats();
+      res.json({ stats });
     } catch (error) {
       next(error);
     }
