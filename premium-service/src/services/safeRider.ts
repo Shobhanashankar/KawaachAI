@@ -124,5 +124,5 @@ async function publishTierChange(
     reason,
     changed_at: new Date().toISOString()
   };
-  await produce('saferider.tier_changed', workerId, event);
+  await produce('saferider.tier_changed', workerId, event as unknown as Record<string, unknown>);
 }

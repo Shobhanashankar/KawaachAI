@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, Alert 
 import { useTranslation } from 'react-i18next';
 import { Colors, Spacing, FontSizes, FontWeights, BorderRadius, Shadows } from '../../constants/Colors';
 import { MOCK_SQUAD, MOCK_WORKER } from '../../services/mockData';
+import { getPremiumServiceSquad } from '../../services/api';
 import { getWorkerProfile, type WorkerProfile } from '../../services/storage';
 
 export default function SquadScreen() {
@@ -10,14 +11,36 @@ export default function SquadScreen() {
   const [hasSquad, setHasSquad] = useState(true);
   const [inviteCode, setInviteCode] = useState('');
   const [worker, setWorker] = useState<WorkerProfile>(MOCK_WORKER);
-  const squad = MOCK_SQUAD;
+  const [squad, setSquad] = useState(MOCK_SQUAD);
 
   useEffect(() => {
     const loadProfile = async () => {
       const profile = await getWorkerProfile();
-      if (profile) setWorker(profile);
+      if (!profile) return;
+
+      setWorker(profile);
+
+      if (profile.squad_id) {
+        try {
+          const response = await getPremiumServiceSquad(profile.squad_id);
+          setSquad({
+            squad_id: response.data.squad.id,
+            zone_h3: response.data.squad.dark_store_h3,
+            members: response.data.members.map((member) => ({
+              worker_id: member.worker_id,
+              name: member.worker_id === profile.worker_id ? profile.name : member.worker_id,
+              avatar: member.worker_id === profile.worker_id ? '🧑' : '🛵',
+            })),
+            claim_free_weeks: response.data.squad.zero_claim_streak,
+            cashback_eligible: response.data.squad.status === 'active',
+            cashback_amount: Number((response.data.member_count * 1.3).toFixed(1)),
+          });
+        } catch {
+          setSquad(MOCK_SQUAD);
+        }
+      }
     };
-    loadProfile();
+    void loadProfile();
   }, []);
 
   const squadMembers = useMemo(() => {

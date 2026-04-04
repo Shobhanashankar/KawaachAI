@@ -25,6 +25,8 @@
       "subtitle": "Enter your Aadhaar number for verification",
       "name_label": "Full Name",
       "name_placeholder": "Enter your name",
+      "phone_label": "Phone Number",
+      "phone_placeholder": "Enter 10-digit phone number",
       "aadhaar_label": "Aadhaar Number",
       "aadhaar_placeholder": "Enter 12-digit Aadhaar number",
       "otp_label": "OTP",
@@ -78,6 +80,7 @@
     "worker_default_name": "Worker",
     "errors": {
       "invalid_name": "Please enter your name",
+      "invalid_phone": "Please enter a valid 10-digit phone number",
       "invalid_aadhaar": "Please enter a valid 12-digit Aadhaar number",
       "invalid_otp": "Invalid OTP. Demo OTP is 123456",
       "partner_id_required": "Please enter your Partner ID",

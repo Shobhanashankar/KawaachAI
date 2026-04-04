@@ -16,6 +16,11 @@ import {
 } from '../../services/storage';
 import { MOCK_PREMIUM_BREAKDOWN, MOCK_WORKER } from '../../services/mockData';
 import i18n, { SUPPORTED_LANGUAGES } from '../../i18n';
+import {
+  createPremiumServiceMandate,
+  createPremiumServiceWorker,
+  getPremiumServiceWorker,
+} from '../../services/api';
 
 const TOTAL_STEPS = 6;
 
@@ -43,6 +48,7 @@ export default function OnboardingScreen() {
 
   // OTP state
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [aadhaar, setAadhaar] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
@@ -71,6 +77,7 @@ export default function OnboardingScreen() {
       if (savedData) {
         setData(savedData);
         if (savedData.name) setName(savedData.name);
+        if (savedData.phone) setPhone(savedData.phone);
         if (savedData.aadhaar) setAadhaar(savedData.aadhaar);
         if (savedData.platform) setPlatform(savedData.platform);
         if (savedData.partner_id) setPartnerId(savedData.partner_id);
@@ -112,6 +119,10 @@ export default function OnboardingScreen() {
       Alert.alert(t('common.error_title'), t('onboarding.errors.invalid_name'));
       return;
     }
+    if (phone.replace(/\D/g, '').length < 10) {
+      Alert.alert(t('common.error_title'), t('onboarding.errors.invalid_phone'));
+      return;
+    }
     if (aadhaar.replace(/\s/g, '').length !== 12) {
       Alert.alert(t('common.error_title'), t('onboarding.errors.invalid_aadhaar'));
       return;
@@ -123,6 +134,7 @@ export default function OnboardingScreen() {
     if (otp === '123456') {
       await saveProgress(2, {
         name: name.trim(),
+        phone: phone.replace(/\D/g, '').slice(-10),
         aadhaar: aadhaar.replace(/\s/g, ''),
         otp_verified: true,
       });
@@ -200,20 +212,89 @@ export default function OnboardingScreen() {
       return;
     }
     setLoading(true);
-    await new Promise(r => setTimeout(r, 2000));
+    try {
+      const resolvedName = data.name?.trim() || name.trim() || t('onboarding.worker_default_name');
+      const resolvedPhone = data.phone || phone.replace(/\D/g, '').slice(-10);
+      const resolvedPlatform = data.platform || 'zepto';
+      const resolvedPartnerId = data.partner_id || partnerId;
+      const resolvedDailyWage = data.daily_wage || parseInt(dailyWage, 10) || 450;
+      const resolvedZone = data.zone_h3 || MOCK_WORKER.zone_h3;
+      const resolvedCity = data.city || MOCK_WORKER.city;
+      const platformWorkerId = `${resolvedPlatform}-${resolvedPartnerId}`;
 
-    await setWorkerProfile({
-      ...MOCK_WORKER,
-      name: data.name?.trim() || name.trim() || t('onboarding.worker_default_name'),
-      platform: data.platform || 'zepto',
-      partner_id: data.partner_id || partnerId,
-      daily_wage: data.daily_wage || parseInt(dailyWage, 10) || 450,
-    });
+      const onboardResponse = await createPremiumServiceWorker({
+        platform_worker_id: platformWorkerId,
+        platform: resolvedPlatform,
+        name: resolvedName,
+        phone: resolvedPhone,
+        upi_id: upiId,
+        h3_zone: resolvedZone,
+        daily_wage_est: resolvedDailyWage,
+      });
 
-    await setOnboardingData({ ...data, upi_id: upiId, policy_id: 'POL-2026-001' });
-    await setOnboardingStep(6);
-    setLoading(false);
-    router.replace('/(tabs)/home');
+      const [detailsResponse, mandateResponse] = await Promise.all([
+        getPremiumServiceWorker(onboardResponse.data.worker_id),
+        createPremiumServiceMandate(onboardResponse.data.worker_id, 99),
+      ]);
+
+      const profile = detailsResponse.data;
+      const policy = profile.policy;
+      const safeRiderTier = profile.saferider_score?.tier ?? 1;
+
+      await setWorkerProfile({
+        worker_id: profile.worker.id,
+        name: profile.worker.name,
+        phone: profile.worker.phone,
+        platform: profile.worker.platform,
+        partner_id: resolvedPartnerId,
+        daily_wage: profile.worker.daily_wage_est,
+        zone_h3: profile.worker.h3_zone,
+        city: resolvedCity,
+        policy_id: policy?.id || onboardResponse.data.policy_id,
+        policy_status: policy?.status === 'active' ? 'ACTIVE' : 'LAPSED',
+        saferider_tier: safeRiderTier,
+        premium: policy?.weekly_premium || onboardResponse.data.weekly_premium,
+        protected_earnings: Math.round(resolvedDailyWage * 6),
+        total_premiums_paid: 0,
+        squad_id: profile.dost_squad?.id,
+      });
+
+      await setOnboardingData({
+        ...data,
+        name: resolvedName,
+        phone: resolvedPhone,
+        upi_id: upiId,
+        worker_id: profile.worker.id,
+        policy_id: policy?.id || onboardResponse.data.policy_id,
+        premium: policy?.weekly_premium || onboardResponse.data.weekly_premium,
+        premium_breakdown: {
+          base: onboardResponse.data.shap_breakdown.base_premium,
+          zone_factor: onboardResponse.data.shap_breakdown.features.zone_multiplier,
+          saferider_discount: onboardResponse.data.shap_breakdown.saferider_contribution,
+          final: onboardResponse.data.shap_breakdown.final_premium,
+        },
+      });
+
+      await setOnboardingStep(6);
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setLoading(false);
+      router.replace('/(tabs)/home');
+      void mandateResponse;
+    } catch {
+      await setWorkerProfile({
+        ...MOCK_WORKER,
+        name: data.name?.trim() || name.trim() || t('onboarding.worker_default_name'),
+        phone: data.phone || phone.replace(/\D/g, '').slice(-10),
+        platform: data.platform || 'zepto',
+        partner_id: data.partner_id || partnerId,
+        daily_wage: data.daily_wage || parseInt(dailyWage, 10) || 450,
+      });
+
+      await setOnboardingData({ ...data, phone, upi_id: upiId, policy_id: 'POL-2026-001' });
+      await setOnboardingStep(6);
+      setLoading(false);
+      router.replace('/(tabs)/home');
+    }
   };
 
   const renderProgressBar = () => (
@@ -284,6 +365,17 @@ export default function OnboardingScreen() {
               autoCapitalize="words"
               value={name}
               onChangeText={setName}
+            />
+
+            <Text style={styles.inputLabel}>{t('onboarding.step1.phone_label')}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={t('onboarding.step1.phone_placeholder')}
+              placeholderTextColor={Colors.textMuted}
+              keyboardType="phone-pad"
+              maxLength={10}
+              value={phone}
+              onChangeText={setPhone}
             />
 
             <Text style={styles.inputLabel}>{t('onboarding.step1.aadhaar_label')}</Text>

@@ -1,6 +1,6 @@
 import { applyPremiumFormula, getNextMonday, getCurrentWeekStart } from '../services/premiumEngine';
 import { computeTier, TIER_RULES } from '../services/safeRider';
-import { isWithinRing } from '../services/dostShield';
+import { isWithinRing } from '../services/dostshield';
 
 // ─── Premium Formula Tests ────────────────────────────────────────────────────
 

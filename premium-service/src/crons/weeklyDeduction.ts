@@ -9,7 +9,7 @@ import {
   getSafeRiderScore, getActiveSquadForWorker, getWorkerById
 } from '../db/queries';
 import { calculatePremium, getCurrentWeekStart } from '../services/premiumEngine';
-import { onSuccessfulDeduction } from '../services/saferider';
+import { onSuccessfulDeduction } from '../services/safeRider';
 
 // ─── Cron Schedule: Every Monday at 06:00 IST (00:30 UTC) ───────────────────
 
