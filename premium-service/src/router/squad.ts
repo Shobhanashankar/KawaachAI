@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { logger } from '../utils/logger';
-import { formSquad, processDostCashbacks } from '../services/dostShield';
+import { formSquad, processDostCashbacks } from '../services/dostshield';
 import { getSquadById, getSquadMembers, getAllActiveSquads } from '../db/queries';
 import { CreateSquadRequest } from '../types';
 

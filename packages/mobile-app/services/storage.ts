@@ -28,10 +28,12 @@ const KEYS = {
 
 export interface OnboardingData {
   name?: string;
+  phone?: string;
   aadhaar?: string;
   otp_verified?: boolean;
   platform?: 'zepto' | 'blinkit';
   partner_id?: string;
+  worker_id?: string;
   daily_wage?: number;
   zone_h3?: string;
   city?: string;
@@ -52,6 +54,7 @@ export interface OnboardingData {
 export interface WorkerProfile {
   worker_id: string;
   name: string;
+  phone?: string;
   platform: 'zepto' | 'blinkit';
   partner_id: string;
   daily_wage: number;

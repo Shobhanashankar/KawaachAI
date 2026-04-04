@@ -1,4 +1,4 @@
-import { Pool, PoolClient, QueryResult } from 'pg';
+import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { logger } from '../utils/logger';
@@ -11,11 +11,12 @@ import {
 // ─── Pool ─────────────────────────────────────────────────────────────────────
 
 export const pool = new Pool({
-  host:     process.env.DB_HOST     || 'localhost',
-  port:     parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME     || 'kawaachai',
-  user:     process.env.DB_USER     || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
+  connectionString: process.env.DATABASE_URL || undefined,
+  host:     process.env.DATABASE_URL ? undefined : (process.env.DB_HOST || 'localhost'),
+  port:     process.env.DATABASE_URL ? undefined : parseInt(process.env.DB_PORT || '5432'),
+  database: process.env.DATABASE_URL ? undefined : (process.env.DB_NAME || 'kawaachai'),
+  user:     process.env.DATABASE_URL ? undefined : (process.env.DB_USER || 'postgres'),
+  password: process.env.DATABASE_URL ? undefined : (process.env.DB_PASSWORD || 'postgres'),
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,
@@ -53,7 +54,7 @@ export async function initSchema(): Promise<void> {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-async function query<T>(sql: string, params?: unknown[]): Promise<QueryResult<T>> {
+async function query<T extends QueryResultRow>(sql: string, params?: unknown[]): Promise<QueryResult<T>> {
   const client = await pool.connect();
   try {
     return await client.query<T>(sql, params);

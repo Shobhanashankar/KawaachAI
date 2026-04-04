@@ -19,6 +19,17 @@ import webhooksRouter from './router/webhook';
 const app = express();
 const PORT = parseInt(process.env.PORT || '3003');
 
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(204);
+    return;
+  }
+  next();
+});
+
 // Raw body capture for Razorpay webhook signature verification
 app.use('/api/v1/webhooks/razorpay', express.raw({ type: 'application/json' }), (req: Request, _res: Response, next: NextFunction) => {
   (req as Request & { rawBody?: string }).rawBody = req.body?.toString();

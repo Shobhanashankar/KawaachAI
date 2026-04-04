@@ -6,7 +6,7 @@ import {
   pool
 } from '../db/queries';
 import { calculatePremium } from '../services/premiumEngine';
-import { initSafeRiderScore, getFraudThreshold, onFraudFlag } from '../services/saferider';
+import { initSafeRiderScore, getFraudThreshold, onFraudFlag } from '../services/safeRider';
 import { createUpiMandate } from '../services/razorpay';
 
 const router = Router();
